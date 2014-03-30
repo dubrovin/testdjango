@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'south',
     'signups',
     'feeds',
+    'sources',
 )
 
 MIDDLEWARE_CLASSES = (
