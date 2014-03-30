@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'signups',
+    'feeds',
 )
 
 MIDDLEWARE_CLASSES = (
