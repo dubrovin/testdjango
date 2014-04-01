@@ -9,9 +9,10 @@ from lxml import etree, objectify
 
 class Feed(models.Model):
     title = models.CharField(max_length=120, null=True, blank=True)
-    text = models.TextField(null=True, blank=True)
+    #text = models.TextField(null=True, blank=True)
     create_at = models.DateTimeField(auto_now_add=True, auto_now=False)
     url = models.URLField(max_length=120, null=True, blank=True)
+    file = models.FileField(upload_to='/static/media/', null=True)
 
     def __unicode__(self):
         return smart_unicode(self.title)
@@ -41,7 +42,7 @@ class Source(models.Model):
                 if('entry' in r.tag):
                     list_of_feeds.append(r)
             for feed in list_of_feeds:
-                buf = Feed.objects.create(title=feed[1].text, text = feed[8].text, create_at=feed[5].text, url=feed[2].text)
+                buf = Feed.objects.create(title=feed[1].text, create_at=feed[5].text, url=feed[3].text)
                 #pdb.set_trace()
                 buf.save()
             super(Source, self).save()
