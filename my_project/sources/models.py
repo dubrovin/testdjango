@@ -17,7 +17,9 @@ class Source(models.Model):
     def save(self):
     	if self.src:
     		result = requests.get(self.src)
-    		root = etree.fromstring(result.text)
-    		etree.tostring(root)
+    		root = etree.fromstring(result.text.encode('utf-8'), base_url="http://www.w3.org/2005/Atom")
+    		l = []
+    		for r in root.getchildren():
+				l.append(r.tag)
     		pdb.set_trace()
     		super(Source, self).save()
