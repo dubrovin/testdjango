@@ -1,8 +1,0 @@
-<h1>Articles</h1>
-<ul>
-{% for feed in object_list %}
-    <li>{{ feed.create_at|date }} - {{ feed.title }}</li>
-{% empty %}
-    <li>No articles yet.</li>
-{% endfor %}
-</ul>
