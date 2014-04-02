@@ -10,7 +10,7 @@ from feeds.models import Feed
 class FeedListView(ListView):
 
     model = Feed
-    template_name = "feeds/feed_list.html"
+    template_name = "feed_list.html"
 
     def get_context_data(self, **kwargs):
         context = super(FeedListView, self).get_context_data(**kwargs)
