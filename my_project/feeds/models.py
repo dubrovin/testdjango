@@ -12,7 +12,7 @@ class Feed(models.Model):
     text = models.TextField(null=True)
     create_at = models.DateTimeField(auto_now_add=True, auto_now=False)
     url = models.URLField(max_length=120, null=True, blank=True)
-    file = models.FileField(upload_to='/static/media/', null=True)
+    file = models.FileField(upload_to='/static/media/', null=True, blank=True)
 
     def __unicode__(self):
         return smart_unicode(self.title)
@@ -25,6 +25,7 @@ class Feed(models.Model):
 class Source(models.Model):
     title = models.CharField(max_length=120, null=True, blank=True)
     src = models.URLField(max_length=120, null=True, blank=True)
+    file = models.FileField(upload_to='/static/media/', null=True, blank=True)
 
     def __unicode__(self):
         return smart_unicode(self.title)
@@ -32,11 +33,9 @@ class Source(models.Model):
     def save(self):
         if self.src:
             result = requests.get(self.src)
-            parser = etree.XMLParser(ns_clean=True)
-            #root = etree.parse(result.text, parser)
-            root = etree.fromstring(result.text.encode('utf-8'), parser)
-            objectify.deannotate(root, cleanup_namespaces=True)
-            # str = etree.tostring(root.getchild())
+            #parser = etree.XMLParser(ns_clean=True)
+            root = etree.fromstring(result.text.encode('utf-8'))
+            #objectify.deannotate(root, cleanup_namespaces=True)
             list_of_feeds = []
             for r in root:
                 if('entry' in r.tag):
@@ -46,3 +45,19 @@ class Source(models.Model):
                 #pdb.set_trace()
                 buf.save()
             super(Source, self).save()
+        elif self.file:
+            tree = etree.parse(self.file)
+            str = etree.tostring(tree.getroot())
+            root = etree.fromstring(str)
+            #pdb.set_trace()
+            #objectify.deannotate(root, cleanup_namespaces=True)
+            list_of_feeds = []
+            for r in root:
+                if('entry' in r.tag):
+                    list_of_feeds.append(r)
+            for feed in list_of_feeds:
+                buf = Feed.objects.create(title=feed[1].text, text=feed[8].text, create_at=feed[5].text, url=feed[3].text)
+                #pdb.set_trace()
+                buf.save()
+            super(Source, self).save()
+        

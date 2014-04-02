@@ -3,7 +3,7 @@
 <h1>Feeds</h1>
 <div class="list-group">
 {% for feed in object_list %}
-    <a href="{{ feed.pk }}" class="list-group-item">{{ feed.create_at }} - {{ feed.title|safe }}</a>
+    <a href="{% url 'feeds:feed-detail' pk=feed.pk %}" class="list-group-item">{{ feed.create_at }} - {{ feed.title|safe }}</a>
 {% empty %}
     <a href="#" class="list-group-item">No feeds yet.</a>
 {% endfor %}
