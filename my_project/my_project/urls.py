@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 admin.autodiscover()
 
+from feeds.views import FeedListView
+
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'signups.views.home', name='home'),
@@ -13,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^thank-you/$', 'signups.views.thankyou', name='thankyou'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^about-us/$', 'signups.views.aboutus', name='aboutus'),
+    url(r'^feeds/$', FeedListView.as_view(), name='feed-list'),
 )
 
 if settings.DEBUG:
