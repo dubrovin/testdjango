@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^thank-you/$', 'signups.views.thankyou', name='thankyou'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^about-us/$', 'signups.views.aboutus', name='aboutus'),
-    url(r'^feeds/$', FeedListView.as_view(), name='feed-list'),
+    url(r'^feeds/', include('feeds.urls', namespace='feeds')),
 )
 
 if settings.DEBUG:

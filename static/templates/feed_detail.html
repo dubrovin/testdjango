@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ object.title|safe }}</h1>
+<div class="container">{{ object.text|safe }}</div>
+<p>url: <a href='{{ object.url }}'> {{ object.url }}</a></p> 
+<p>Published: {{ object.create_at|date }}</p>
+{% endblock %}
