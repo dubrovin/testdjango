@@ -35,18 +35,19 @@ class Source(models.Model):
             create_at = node.xpath('.//ns:published', namespaces=ns_map)[0].text
             url = node.xpath('.//ns:id', namespaces=ns_map)[0].text
             
-            if (Feed.objects.filter(title=title)):
+            if Feed.objects.filter(title=title):
                 break
             else:
                 f = Feed.objects.create(title=title, text=text, create_at=create_at, url=url)
                 f.save()
-        super(Source, self).save()
 
     def save(self):
         if self.src:
             data = etree.parse(self.src)
-            Source.parse_and_save(self, data)
+            self.parse_and_save(data)
+            super(Source, self).save()
         elif self.file:
             data = etree.fromstring(self.file.read())
-            Source.parse_and_save(self, data)
+            self.parse_and_save(data)
+            super(Source, self).save()
         
