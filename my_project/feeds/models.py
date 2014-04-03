@@ -1,4 +1,3 @@
-# from io import StringIO, BytesIO
 import requests
 import pdb;
 from django.conf import settings
@@ -13,7 +12,6 @@ class Feed(models.Model):
     text = models.TextField(null=True)
     create_at = models.DateTimeField(auto_now_add=True, auto_now=False)
     url = models.URLField(max_length=120, null=True, blank=True)
-    file = models.FileField(upload_to=settings.MEDIA_ROOT, null=True, blank=True)
 
     def __unicode__(self):
         return smart_unicode(self.title)
@@ -26,35 +24,29 @@ class Source(models.Model):
     def __unicode__(self):
         return smart_unicode(self.title)
 
+    def parse_and_save(self, data):
+        ns_map = {'ns': 'http://www.w3.org/2005/Atom'}
+
+        nodes = data.xpath('//ns:feed/ns:entry', namespaces=ns_map)
+
+        for node in nodes:
+            title = node.xpath('.//ns:title', namespaces=ns_map)[0].text
+            text = node.xpath('.//ns:content', namespaces=ns_map)[0].text
+            create_at = node.xpath('.//ns:published', namespaces=ns_map)[0].text
+            url = node.xpath('.//ns:id', namespaces=ns_map)[0].text
+            
+            if (Feed.objects.filter(title=title)):
+                break
+            else:
+                f = Feed.objects.create(title=title, text=text, create_at=create_at, url=url)
+                f.save()
+        super(Source, self).save()
+
     def save(self):
         if self.src:
             data = etree.parse(self.src)
-            ns_map = {'ns': 'http://www.w3.org/2005/Atom'}
-
-            nodes = data.xpath('//ns:feed/ns:entry', namespaces=ns_map)
-
-            for node in nodes:
-                title = node.xpath('.//ns:title', namespaces=ns_map)[0].text
-                text = node.xpath('.//ns:content', namespaces=ns_map)[0].text
-                create_at = node.xpath('.//ns:published', namespaces=ns_map)[0].text
-                url = node.xpath('.//ns:id', namespaces=ns_map)[0].text
-
-                f = Feed.objects.create(title=title, text=text, create_at=create_at, url=url)
-                f.save()
-                super(Source, self).save()
+            Source.parse_and_save(self, data)
         elif self.file:
-            data = etree.parse(self.file.read())
-            ns_map = {'ns': 'http://www.w3.org/2005/Atom'}
-
-            nodes = data.xpath('//ns:feed/ns:entry', namespaces=ns_map)
-
-            for node in nodes:
-                title = node.xpath('.//ns:title', namespaces=ns_map)[0].text
-                text = node.xpath('.//ns:content', namespaces=ns_map)[0].text
-                create_at = node.xpath('.//ns:published', namespaces=ns_map)[0].text
-                url = node.xpath('.//ns:id', namespaces=ns_map)[0].text
-
-                f = Feed.objects.create(title=title, text=text, create_at=create_at, url=url)
-                f.save()
-                super(Source, self).save()
+            data = etree.fromstring(self.file.read())
+            Source.parse_and_save(self, data)
         
