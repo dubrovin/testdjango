@@ -35,11 +35,8 @@ class Source(models.Model):
             create_at = node.xpath('.//ns:published', namespaces=ns_map)[0].text
             url = node.xpath('.//ns:id', namespaces=ns_map)[0].text
             
-            if Feed.objects.filter(title=title):
-                break
-            else:
-                f = Feed.objects.create(title=title, text=text, create_at=create_at, url=url)
-                f.save()
+            if not Feed.objects.filter(title=title).exists():
+                Feed.objects.create(title=title, text=text, create_at=create_at, url=url)
 
     def save(self):
         if self.src:
