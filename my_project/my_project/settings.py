@@ -9,11 +9,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 from .email_info import EMAIL_USE_TLS, EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
 # For gmail
-EMAIL_USE_TLS = EMAIL_USE_TLS
-EMAIL_HOST = EMAIL_HOST
-EMAIL_HOST_USER = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
-EMAIL_PORT = EMAIL_PORT
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smpt.google.com'
+EMAIL_HOST_USER = 'dubrovin.ruslan@gmail.com'
+EMAIL_HOST_PASSWORD = 'Heckfy93'
+EMAIL_PORT = 587
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
